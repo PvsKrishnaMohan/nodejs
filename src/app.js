@@ -3,19 +3,24 @@ const app = express();
 
 
 
-app.use("/about",(req,res)=>{
-    res.send("hello, you are in about page")
+app.get("/user",(req,res)=>{
+    res.send({"First_name": "krishna","Last_name":"mohan"})
 })
 
-app.use("/contact",(req,res)=>{
-    res.send('hello, you are in contact page')
+app.post("/user",(req,res)=>{
+    res.send("successfully sent post req!")
 })
 
-app.use("/projects",(req,res)=>{
-    res.send('hello, you are in project page')
+app.delete("/user",(req,res)=>{
+    res.send("user deleted successfully!")
 })
-app.use("/", (req,res) =>{
-    res.send('hello World! welcome to Home page')
+
+app.put("/user",(req,res)=>{
+    res.send("data updated successfully!")
+})
+
+app.patch("/user",(req,res)=>{
+    res.send("data patched!")
 })
 app.listen(5000,()=>{
     console.log("server listening from port 5000 successfully!")
