@@ -3,7 +3,9 @@ const app = express();
 
 
 
-app.get("/user",(req,res)=>{
+app.get("/colou?r",(req,res)=>{
+    // console.log(req.query);
+    console.log(req.params)
     res.send({"First_name": "krishna","Last_name":"mohan"})
 })
 
@@ -20,7 +22,7 @@ app.put("/user",(req,res)=>{
 })
 
 app.patch("/user",(req,res)=>{
-    res.send("data patched!")
+    res.send("data patched!");
 })
 app.listen(5000,()=>{
     console.log("server listening from port 5000 successfully!")
