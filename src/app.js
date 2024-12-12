@@ -1,29 +1,30 @@
 const express = require('express');
 const app = express();
-const {adminAuth, userAuth} = require('./middlewares/adminAuth')
+const connectDB = require('./config/database');
+const User = require('./models/user');
 
-app.use("/admin", adminAuth);
-app.get("/admin",(req,res) => {
-    res.send("admin access !!!!!!!");
-});
-
-app.get("/admin/data",adminAuth, (req,res) => {
-    try {
-        throw new Error('eegredgt')
-        res.send('Admin data sent succesfully!')
-    } catch(err) {
-        res.status(500).send('something went wrong!')
+app.post("/postUser",async(req,res) => {
+    const UserObj = {
+        firstName : "Kajallove",
+        lastName : "aggarwal",
+        emailId : "kajal@gmail.com",
+        password : "kajuKajal",
     }
+
+    const UserData = new User(UserObj)
+    try {
+        await UserData.save();
+        res.send('user Data posted Successfully!')
+    } catch(err){
+        res.status(400).send("something went wrong in saving the Data!")
+    } 
 })
 
-app.post("/adminLogin",(req,res) => {
-    res.send('admin data posted')
-})
-
-app.get("/admin/payroll",adminAuth,(req,res) => {
-    res.send("Admin payroll sent successfully!")
-})
-
-app.listen(5000,() => {
-    console.log("server listening from port 5000 successfully!")
+connectDB().then(() => {
+    console.log('Connected to MongoDB..')
+    app.listen(5000,() => {
+        console.log("server listening from port 5000 successfully!")
+    })
+}).catch((err) => {
+    console.error("Error in connecting DB...")
 })
