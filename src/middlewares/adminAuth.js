@@ -1,6 +1,6 @@
 const adminAuth = (req, res,next) => {
     const auth = "abc123";
-    const isAuthorized = auth === "abc123o";
+    const isAuthorized = auth === "abc123";
 
     if(!isAuthorized) {
         res.status(401).send("Access denied due to unAuthorization!")

@@ -8,7 +8,12 @@ app.get("/admin",(req,res) => {
 });
 
 app.get("/admin/data",adminAuth, (req,res) => {
-    res.send('Admin data sent succesfully!')
+    try {
+        throw new Error('eegredgt')
+        res.send('Admin data sent succesfully!')
+    } catch(err) {
+        res.status(500).send('something went wrong!')
+    }
 })
 
 app.post("/adminLogin",(req,res) => {
