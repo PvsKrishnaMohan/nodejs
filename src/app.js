@@ -3,15 +3,12 @@ const app = express();
 const connectDB = require('./config/database');
 const User = require('./models/user');
 
-app.post("/postUser",async(req,res) => {
-    const UserObj = {
-        firstName : "Kajallove",
-        lastName : "aggarwal",
-        emailId : "kajal@gmail.com",
-        password : "kajuKajal",
-    }
+app.use(express.json())
+app.post("/signup",async(req,res) => {
+    // console.log(req.body)
+    const UserObj = new User(req.body);
+    const UserData = new User(UserObj);
 
-    const UserData = new User(UserObj)
     try {
         await UserData.save();
         res.send('user Data posted Successfully!')
