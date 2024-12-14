@@ -7,15 +7,15 @@ app.use(express.json())
 
 // post data signup API
 app.post("/signup",async(req,res) => {
-    // console.log(req.body)
-    const UserObj = new User(req.body);
-    const UserData = new User(UserObj);
+    console.log(req.body)
+    // const UserObj = new User(req.body);
+    const UserData = new User(req.body);
 
     try {
         await UserData.save();
         res.send('user Data posted Successfully!')
     } catch(err){
-        res.status(400).send("something went wrong in saving the Data!")
+        res.status(400).send("something went wrong in saving the Data! "+err)
     } 
 })
 
@@ -30,7 +30,7 @@ app.get("/getuser", async (req,res) => {
             res.send(filteredData)
         }
     }catch(err){
-        res.status(400).send("something went wrong in retriving the Data!");
+        res.status(400).send("something went wrong in retriving the Data! " +err);
     }
 })
 
@@ -51,21 +51,31 @@ app.delete("/deleteUser", async(req,res)=>{
         await User.findByIdAndDelete({_id : deletedUserId})
         res.send("user has successfully deleted!")       
     }catch(err){
-        res.status(400).send("something went wrong in deleting the Data!");
+        res.status(400).send("something went wrong in deleting the Data! " + err);
     }
 })
 
 //update API
-app.patch("/updateUser",async(req,res)=>{
-    const userTobeUpdated = req.body.UserId;
+app.patch("/updateUser/:UserId",async(req,res)=>{
+    const userTobeUpdated = req.params.UserId;
     const reqBody = req.body;
-    console.log(reqBody)
+    // console.log(reqBody)
     try{
-        const updatedUser = await User.findByIdAndUpdate( userTobeUpdated,reqBody);
+        const ALLOWEDDATAFIELDS = ["firstName","lastName","password","age","photoUrl","about","skills"];
+        const isUpdateAllowed = Object.keys(reqBody).every((key)=> ALLOWEDDATAFIELDS.includes(key));
+        if(!isUpdateAllowed){
+            throw new Error("cannot update the field")
+        }
+        if(reqBody?.skills > 0) {
+            throw new Error("Max skills allowed to enter is 10")
+        }
+        const updatedUser = await User.findByIdAndUpdate( userTobeUpdated,reqBody,{
+            returnDocument:'after',
+            runValidators:true});
         res.send("user has been updated successfully!")
     }catch(err){
         console.error(err); // Log the error for debugging
-        res.status(500).send("Something went wrong in updating the data!")
+        res.status(500).send("Something went wrong in updating the data! " + err.message)
     }
 })
 connectDB().then(() => {
@@ -74,5 +84,5 @@ connectDB().then(() => {
         console.log("server listening from port 5000 successfully!")
     })
 }).catch((err) => {
-    console.error("Error in connecting DB...")
+    console.error("Error in connecting DB... " + err)
 })
