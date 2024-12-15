@@ -2,21 +2,48 @@ const express = require('express');
 const app = express();
 const connectDB = require('./config/database');
 const User = require('./models/user');
+const {validateRequestData} = require('./utils/validations');
+const bcrypt = require('bcrypt');
 
 app.use(express.json())
 
 // post data signup API
 app.post("/signup",async(req,res) => {
-    console.log(req.body)
-    // const UserObj = new User(req.body);
-    const UserData = new User(req.body);
-
     try {
+        validateRequestData(req);
+        const {firstName, lastName, emailId, password} = req.body;
+        const hashedPassword = await bcrypt.hash(password,10);
+        const UserData = new User({
+            firstName,
+            lastName,
+            emailId,
+            password:hashedPassword
+        });
         await UserData.save();
         res.send('user Data posted Successfully!')
     } catch(err){
-        res.status(400).send("something went wrong in saving the Data! "+err)
+        res.status(400).send("something went wrong in saving the Data! " + err)
     } 
+})
+
+// Login API
+app.post("/login",async (req,res)=>{
+    try {
+        const {emailId, password} = req.body;
+        const isValidEmail = await User.findOne({emailId : emailId});
+        if(!isValidEmail){
+            throw new Error("Invalid credentials!");
+        }
+        const isValidPassword = await bcrypt.compare(password, isValidEmail.password)
+        if(isValidPassword){
+            res.send("Login Successfull!")
+        }else {
+            throw new Error("Invalid credentials!")
+        }
+
+    } catch(err){
+        res.status(400).send("ERR : "+ err.message)
+    }
 })
 
 // get data of the user using filter (eg: filtering by emailId)
