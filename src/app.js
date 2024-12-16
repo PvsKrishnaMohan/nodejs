@@ -4,8 +4,11 @@ const connectDB = require('./config/database');
 const User = require('./models/user');
 const {validateRequestData} = require('./utils/validations');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 app.use(express.json())
+app.use(cookieParser())
 
 // post data signup API
 app.post("/signup",async(req,res) => {
@@ -30,19 +33,45 @@ app.post("/signup",async(req,res) => {
 app.post("/login",async (req,res)=>{
     try {
         const {emailId, password} = req.body;
-        const isValidEmail = await User.findOne({emailId : emailId});
-        if(!isValidEmail){
+        const user = await User.findOne({emailId : emailId});
+        if(!user){
             throw new Error("Invalid credentials!");
         }
-        const isValidPassword = await bcrypt.compare(password, isValidEmail.password)
+        const isValidPassword = await bcrypt.compare(password, user.password)
         if(isValidPassword){
-            res.send("Login Successfull!")
+            //create a JWT token
+            const token = await jwt.sign({_id:user._id },"DevTinder@479");
+            // attach the JWT token and send back the cookie to the user
+            res.cookie("token", token);
+            res.send("Login Successfull!");
         }else {
             throw new Error("Invalid credentials!")
         }
 
     } catch(err){
         res.status(400).send("ERR : "+ err.message)
+    }
+})
+
+// Profile API
+app.get("/profile",async (req,res) => {
+    try{
+        const cookie = req.cookies;
+        const {token} = cookie;
+        if(!token){
+            throw new Error("Invalid Token, please Authenticate by login");
+        }
+        const decodedMessage = await jwt.verify(token,"DevTinder@479");
+        const {_id} = decodedMessage;
+        const userLoggedIn = await User.findById(_id);
+        if(!userLoggedIn){
+            throw new Error("Invalid User / user does not Exist");
+        }
+        // console.log("loggedin user is "+_id);
+        res.send(userLoggedIn);
+
+    }catch(err){
+        res.status(404).send("ERR: "+err.message);
     }
 })
 
