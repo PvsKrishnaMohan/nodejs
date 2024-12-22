@@ -2,75 +2,27 @@ const express = require("express");
 const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/user");
-const { validateRequestData } = require("./utils/validations");
-const bcrypt = require("bcrypt");
+// const { validateRequestData } = require("./utils/validations");
+// const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
-const { userAuth } = require("./middlewares/Auth");
+// const jwt = require("jsonwebtoken");
+// const { userAuth } = require("./middlewares/Auth");
 
 app.use(express.json());
 app.use(cookieParser());
 
-// post data signup API
-app.post("/signup", async (req, res) => {
-  try {
-    validateRequestData(req);
-    const { firstName, lastName, emailId, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const UserData = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: hashedPassword,
-    });
-    await UserData.save();
-    res.send("user Data posted Successfully!");
-  } catch (err) {
-    res.status(400).send("something went wrong in saving the Data! " + err);
-  }
-});
+const AuthRoute = require("./routes/authRoutes");
+const profileRoute = require("./routes/profileRoutes");
+const requestRoute = require("./routes/requests");
 
-// Login API
-app.post("/login", async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
-    const user = await User.findOne({ emailId: emailId });
-    if (!user) {
-      throw new Error("Invalid credentials!");
-    }
-    // const isValidPassword = await bcrypt.compare(password, user.password)
-    const isValidPassword = await user.validatePassword(password);
-    if (isValidPassword) {
-      //create a JWT token
-      const token = await user.getJWT();
-      // attach the JWT token and send back the cookie to the user
-      res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000),
-      });
-      res.send(
-        "Hello " +
-          user.firstName +
-          " " +
-          user.lastName +
-          ", Your Login is Successfull!"
-      );
-    } else {
-      throw new Error("Invalid credentials!");
-    }
-  } catch (err) {
-    res.status(400).send("ERR : " + err.message);
-  }
-});
 
-// Profile API
-app.get("/profile", userAuth, async (req, res) => {
-  try {
-    const userLoggedIn = req.user;
-    res.send(userLoggedIn);
-  } catch (err) {
-    res.status(404).send("ERR: " + err.message);
-  }
-});
+
+app.use('/', AuthRoute);
+app.use('/', profileRoute);
+app.use('/', requestRoute);
+
+
+
 
 // get data of the user using filter (eg: filtering by emailId)
 
@@ -86,18 +38,7 @@ app.get("/getuser", async (req, res) => {
     res.status(400).send("something went wrong in retriving the Data! " + err);
   }
 });
-//connection request API
 
-app.get("/getConnectionRequest", userAuth, (req, res) => {
-  try {
-    const user = req.user;
-    res.send(
-      user.firstName + " " + user.lastName + " sent the connection request!"
-    );
-  } catch (err) {
-    res.status(404).send("ERR: " + err);
-  }
-});
 // user feed API
 app.get("/feed", async (req, res) => {
   const respFeed = await User.find({});
@@ -128,7 +69,6 @@ app.patch("/updateUser/:UserId", async (req, res) => {
     const ALLOWEDDATAFIELDS = [
       "firstName",
       "lastName",
-      "password",
       "age",
       "photoUrl",
       "about",
@@ -155,6 +95,7 @@ app.patch("/updateUser/:UserId", async (req, res) => {
       .send("Something went wrong in updating the data! " + err.message);
   }
 });
+
 connectDB()
   .then(() => {
     console.log("Connected to MongoDB..");
