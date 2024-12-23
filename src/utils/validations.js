@@ -29,7 +29,25 @@ const validateEditProfileData = (req) => {
       }
       return isUpdateAllowed
 }
+
+const validateChangePasswordProfileData = (req) => {
+    const ALLOWEDDATAFIELDS = ["password"];
+    const { password } = req;
+    const isAllowedDataField = Object.keys(req).every((key) =>
+        ALLOWEDDATAFIELDS.includes(key)
+    );
+    console.log(isAllowedDataField,'pp')
+    if(!isAllowedDataField){
+        throw new Error("cannot change the password");
+    }
+    if(!validator.isStrongPassword(password)){
+        throw new Error("Entered password is not strong!");
+    }
+
+    return isAllowedDataField;
+}
 module.exports = {
     validateRequestData,
-    validateEditProfileData
+    validateEditProfileData,
+    validateChangePasswordProfileData
 }

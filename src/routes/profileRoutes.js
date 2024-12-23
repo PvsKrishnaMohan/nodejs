@@ -2,8 +2,8 @@ const express = require('express');
 
 const profileRoute = express.Router();
 const { userAuth } = require("../middlewares/Auth");
-const { validateEditProfileData } = require("../utils/validations");
-
+const { validateEditProfileData,validateChangePasswordProfileData } = require("../utils/validations");
+const bcrypt = require("bcrypt");
 
 // GET - Profile API
 profileRoute.get("/profile/view", userAuth, async (req, res) => {
@@ -29,6 +29,23 @@ profileRoute.patch("/profile/edit", userAuth, async(req,res) => {
         
     }catch(err){
         res.status(404).send("ERR: " + err.message);
+    }
+})
+
+// PATCH - UPDATE PROFILE Password
+profileRoute.patch("/profile/password", userAuth, async(req,res)=>{
+    try {
+        validateChangePasswordProfileData(req.body);
+        if(!validateChangePasswordProfileData){
+            throw new Error("Invalid data request, Something went wrong in changing password!");           
+        }
+        const loggedInUser = req.user;
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        loggedInUser.password = hashedPassword;
+        await loggedInUser.save();
+        res.send("Password changed successfully!");
+    } catch(err){
+        res.status(404).send("ERR "+ err.message)
     }
 })
 

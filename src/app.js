@@ -15,14 +15,9 @@ const AuthRoute = require("./routes/authRoutes");
 const profileRoute = require("./routes/profileRoutes");
 const requestRoute = require("./routes/requests");
 
-
-
 app.use('/', AuthRoute);
 app.use('/', profileRoute);
 app.use('/', requestRoute);
-
-
-
 
 // get data of the user using filter (eg: filtering by emailId)
 
