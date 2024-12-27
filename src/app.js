@@ -13,11 +13,13 @@ app.use(cookieParser());
 
 const AuthRoute = require("./routes/authRoutes");
 const profileRoute = require("./routes/profileRoutes");
-const requestRoute = require("./routes/requests");
+const requestRoute = require("./routes/requestsRoutes");
+const userRoute = require("./routes/userRoutes");
 
 app.use('/', AuthRoute);
 app.use('/', profileRoute);
 app.use('/', requestRoute);
+app.use('/', userRoute);
 
 // get data of the user using filter (eg: filtering by emailId)
 

@@ -72,7 +72,6 @@ requestRoute.post(
   }
 );
 
-module.exports = requestRoute;
 
 // POST - Review request API
 requestRoute.post(
@@ -109,3 +108,5 @@ requestRoute.post(
     }
   }
 );
+
+module.exports = requestRoute;
