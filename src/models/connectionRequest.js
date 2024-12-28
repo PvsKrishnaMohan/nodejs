@@ -13,6 +13,7 @@ const connectionRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      ref: "User",
       required : true,
       enum: {
         values: ["ignored", "intrested", "rejected", "accepted"],
