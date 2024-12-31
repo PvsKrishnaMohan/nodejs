@@ -37,14 +37,14 @@ app.get("/getuser", async (req, res) => {
 });
 
 // user feed API
-app.get("/feed", async (req, res) => {
-  const respFeed = await User.find({});
-  if (respFeed.length === 0) {
-    res.status(400).send("No data has been found!");
-  } else {
-    res.send(respFeed);
-  }
-});
+// app.get("/feed", async (req, res) => {
+//   const respFeed = await User.find({});
+//   if (respFeed.length === 0) {
+//     res.status(400).send("No data has been found!");
+//   } else {
+//     res.send(respFeed);
+//   }
+// });
 
 app.delete("/deleteUser", async (req, res) => {
   const deletedUserId = req.body.UserId;
