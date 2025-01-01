@@ -42,11 +42,12 @@ AuthRoute.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 8 * 3600000),
       });
       res.send(
-        "Hello " +
-          user.firstName +
-          " " +
-          user.lastName +
-          ", Your Login is Successfull!"
+        user
+        // "Hello " +
+        //   user.firstName +
+        //   " " +
+        //   user.lastName +
+        //   ", Your Login is Successfull!"
       );
     } else {
       throw new Error("Invalid credentials!");
