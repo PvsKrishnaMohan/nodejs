@@ -72,7 +72,6 @@ requestRoute.post(
   }
 );
 
-
 // POST - Review request API
 requestRoute.post(
   "/request/review/:status/:requestId",

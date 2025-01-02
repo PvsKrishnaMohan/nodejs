@@ -9,10 +9,12 @@ const cookieParser = require("cookie-parser");
 // const { userAuth } = require("./middlewares/Auth");
 const cors = require("cors");
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials : true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -22,10 +24,10 @@ const profileRoute = require("./routes/profileRoutes");
 const requestRoute = require("./routes/requestsRoutes");
 const userRoute = require("./routes/userRoutes");
 
-app.use('/', AuthRoute);
-app.use('/', profileRoute);
-app.use('/', requestRoute);
-app.use('/', userRoute);
+app.use("/", AuthRoute);
+app.use("/", profileRoute);
+app.use("/", requestRoute);
+app.use("/", userRoute);
 
 // get data of the user using filter (eg: filtering by emailId)
 

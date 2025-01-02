@@ -62,7 +62,7 @@ userRoute.get("/feed", userAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
     limit = limit > 50 ? 50 : limit;
-    const skip = (page -1 ) * limit;
+    const skip = (page - 1) * limit;
 
     // find all connection requests (sent + received)
     const connectionRequests = await connectionRequestModel
@@ -82,7 +82,10 @@ userRoute.get("/feed", userAuth, async (req, res) => {
         { _id: { $nin: Array.from(hideUsersFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select(USERSAFE_DATA).skip(skip).limit(limit);
+    })
+      .select(USERSAFE_DATA)
+      .skip(skip)
+      .limit(limit);
 
     res.send(users);
   } catch (err) {

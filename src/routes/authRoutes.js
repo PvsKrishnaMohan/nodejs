@@ -9,8 +9,8 @@ const User = require("../models/user");
 AuthRoute.post("/signup", async (req, res) => {
   try {
     validateRequestData(req);
-    const { firstName, lastName, emailId, password } = req.body
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const { firstName, lastName, emailId, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const UserData = new User({
       firstName,
       lastName,
@@ -60,13 +60,10 @@ AuthRoute.post("/login", async (req, res) => {
 // POST - Logout API
 AuthRoute.post("/logout", async (req, res) => {
   try {
-    
     res.cookie("token", null, {
       expires: new Date(Date.now()),
     });
-    res.send(
-      "Logged Out Successfully!"
-    );
+    res.send("Logged Out Successfully!");
   } catch (err) {
     res.status(400).send("ERR : " + err.message);
   }
