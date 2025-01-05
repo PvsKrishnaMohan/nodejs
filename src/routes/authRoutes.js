@@ -17,8 +17,14 @@ AuthRoute.post("/signup", async (req, res) => {
       emailId,
       password: hashedPassword,
     });
-    await UserData.save();
-    res.send("user Data posted Successfully!");
+    const savedData = await UserData.save();
+    const token = await savedData.getJWT();
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+    res.json({message : "User Added Successfully!", data : savedData});
+
   } catch (err) {
     res.status(400).send("something went wrong in saving the Data! " + err);
   }

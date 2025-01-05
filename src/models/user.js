@@ -51,7 +51,7 @@ const userSchema = new Schema(
     photoUrl: {
       type: String,
       default:
-        "https://tse4.mm.bing.net/th?id=OIP.w-l6olXGBKESPlVMwS7v3AHaHa&pid=Api&P=0&h=180",
+        "https://static.vecteezy.com/system/resources/previews/024/983/914/original/simple-user-default-icon-free-png.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Enter a strong password!...");
