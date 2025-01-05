@@ -13,7 +13,10 @@ userRoute.get("/user/requests/received", userAuth, async (req, res) => {
         toUserId: userLoggedIn._id,
         status: "intrested",
       })
-      .populate("fromUserId", "firstName lastName photoUrl about skills age gender");
+      .populate(
+        "fromUserId",
+        "firstName lastName photoUrl about skills age gender"
+      );
     res
       .status(200)
       .json({ message: "data fetched successfully", data: requestsReceived });
@@ -72,6 +75,7 @@ userRoute.get("/feed", userAuth, async (req, res) => {
       .select("fromUserId toUserId");
 
     const hideUsersFromFeed = new Set();
+
     connectionRequests.forEach((req) => {
       hideUsersFromFeed.add(req.fromUserId.toString());
       hideUsersFromFeed.add(req.toUserId.toString());
@@ -87,7 +91,7 @@ userRoute.get("/feed", userAuth, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    res.send({"data" : users});
+    res.send({ "data" : users });
   } catch (err) {
     res.status(400).json({ message: "ERR : " + err });
   }
