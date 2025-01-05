@@ -51,7 +51,7 @@ const userSchema = new Schema(
     photoUrl: {
       type: String,
       default:
-        "https://static.vecteezy.com/system/resources/previews/024/983/914/original/simple-user-default-icon-free-png.png",
+        "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Free-Download.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Enter a strong password!...");
