@@ -51,7 +51,7 @@ const userSchema = new Schema(
     photoUrl: {
       type: String,
       default:
-        "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Free-Download.png",
+        "https://res.cloudinary.com/krishnamohan479/image/upload/v1737920807/3dicons-boy-front-color_w3lqbh.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Enter a strong password!...");
